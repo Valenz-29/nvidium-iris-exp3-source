@@ -60,6 +60,3 @@ Nvidium is distributed under the GNU LGPL v3.0. This repository retains the upst
 
 When redistributing the modified binary, keep the license and attribution available and provide a public link to this repository as the corresponding modification source.
 
-## Modrinth
-
-For Modrinth's **Unknown external content** review, select **License** and use the text in [`MODRINTH_PERMISSION_NOTES.md`](MODRINTH_PERMISSION_NOTES.md).
