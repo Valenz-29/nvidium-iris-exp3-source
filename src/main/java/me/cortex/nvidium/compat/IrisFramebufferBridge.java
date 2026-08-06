@@ -17,6 +17,7 @@ public final class IrisFramebufferBridge {
     private static final ThreadLocal<TerrainRenderPass> CURRENT_PASS = new ThreadLocal<>();
 
     private static boolean reflectionInitialized;
+    private static boolean bridgeDisabled;
     private static boolean bridgeReported;
     private static boolean failureReported;
 
@@ -37,7 +38,7 @@ public final class IrisFramebufferBridge {
     public static void bindFramebuffer(int target, int fallbackFramebuffer) {
         TerrainRenderPass pass = CURRENT_PASS.get();
 
-        if (pass != null) {
+        if (!bridgeDisabled && pass != null) {
             try {
                 initializeReflection();
 
@@ -58,9 +59,10 @@ public final class IrisFramebufferBridge {
                     }
                 }
             } catch (Throwable throwable) {
+                bridgeDisabled = true;
                 if (!failureReported) {
                     failureReported = true;
-                    System.err.println("[Nvidium Iris Exp3] Iris framebuffer bridge failed; using vanilla target");
+                    System.err.println("[Nvidium Iris Exp3] Iris framebuffer bridge failed; disabling bridge and using vanilla target");
                     throwable.printStackTrace();
                 }
             }
