@@ -1,0 +1,190 @@
+diff --git a/src/main/java/me/cortex/nvidium/NvidiumWorldRenderer.java b/src/main/java/me/cortex/nvidium/NvidiumWorldRenderer.java
+--- a/src/main/java/me/cortex/nvidium/NvidiumWorldRenderer.java
++++ b/src/main/java/me/cortex/nvidium/NvidiumWorldRenderer.java
+@@ -5,6 +5,7 @@ import me.cortex.nvidium.config.TranslucencySortingLevel;
+ import me.cortex.nvidium.gl.RenderDevice;
+ import me.cortex.nvidium.managers.SectionManager;
+ import me.cortex.nvidium.sodiumCompat.NvidiumCompactChunkVertex;
++import me.cortex.nvidium.util.AdaptiveUploadBufferSizing;
+ import me.cortex.nvidium.util.DownloadTaskStream;
+ import me.cortex.nvidium.util.UploadingBufferStream;
+ import net.caffeinemc.mods.sodium.client.SodiumClientMod;
+@@ -45,8 +46,14 @@ public class NvidiumWorldRenderer {
+     //Note: the reason that asyncChunkTracker is passed in as an already constructed object is cause of the amount of argmuents it takes to construct it
+     public NvidiumWorldRenderer() {
+         int frames = SodiumClientMod.options().advanced.cpuRenderAheadLimit+1;
+-        //32 mb upload buffer
+-        this.uploadStream = new UploadingBufferStream(device, 32000000);
++
++        long uploadBufferBytes = AdaptiveUploadBufferSizing.resolveBytes(
++                Nvidium.config.automatic_upload_buffer_memory,
++                Nvidium.config.upload_buffer_memory
++        );
++        this.uploadStream = new UploadingBufferStream(device, uploadBufferBytes);
++        Nvidium.LOGGER.info("Using {} MiB RAM-backed geometry upload staging", this.uploadStream.getCapacityMiB());
++
+         //8 mb download buffer
+         this.downloadStream = new DownloadTaskStream(device, frames, 8000000);
+ 
+@@ -111,6 +118,7 @@ public class NvidiumWorldRenderer {
+                         this.sectionManager.terrainAreana.getUsedMB())
+                 + "/"+ this.max_geometry_memory + String.format(", F: %.2f", sectionManager.terrainAreana.getFragmentation()*100));
++        debugInfo.add("Upload staging: " + this.uploadStream.getCapacityMiB() + " MiB, forced waits: " + this.uploadStream.getForcedWaitCount());
+         debugInfo.add("Regions: " + sectionManager.getRegionManager().regionCount() + "/" + sectionManager.getRegionManager().maxRegions());
+         this.renderPipeline.addDebugInfo(debugInfo);
+     }
+diff --git a/src/main/java/me/cortex/nvidium/compat/IrisFramebufferBridge.java b/src/main/java/me/cortex/nvidium/compat/IrisFramebufferBridge.java
+--- a/src/main/java/me/cortex/nvidium/compat/IrisFramebufferBridge.java
++++ b/src/main/java/me/cortex/nvidium/compat/IrisFramebufferBridge.java
+@@ -18,6 +18,7 @@ public final class IrisFramebufferBridge {
+     private static final ThreadLocal<TerrainRenderPass> CURRENT_PASS = new ThreadLocal<>();
+ 
+     private static boolean reflectionInitialized;
++    private static boolean bridgeDisabled;
+     private static boolean bridgeReported;
+     private static boolean failureReported;
+ 
+@@ -34,7 +35,7 @@ public final class IrisFramebufferBridge {
+     public static void bindFramebuffer(int target, int fallbackFramebuffer) {
+         TerrainRenderPass pass = CURRENT_PASS.get();
+ 
+-        if (pass != null) {
++        if (!bridgeDisabled && pass != null) {
+             try {
+                 initializeReflection();
+ 
+@@ -56,9 +57,10 @@ public final class IrisFramebufferBridge {
+                     }
+                 }
+             } catch (Throwable throwable) {
++                bridgeDisabled = true;
+                 if (!failureReported) {
+                     failureReported = true;
+-                    System.err.println("[Nvidium Iris Exp3] Iris framebuffer bridge failed; using vanilla target");
++                    System.err.println("[Nvidium Iris Exp3] Iris framebuffer bridge failed; disabling bridge and using vanilla target");
+                     throwable.printStackTrace();
+                 }
+             }
+diff --git a/src/main/java/me/cortex/nvidium/config/NvidiumConfig.java b/src/main/java/me/cortex/nvidium/config/NvidiumConfig.java
+--- a/src/main/java/me/cortex/nvidium/config/NvidiumConfig.java
++++ b/src/main/java/me/cortex/nvidium/config/NvidiumConfig.java
+@@ -17,6 +17,9 @@ public class NvidiumConfig {
+     public int max_geometry_memory = 2048;
+     public boolean automatic_memory = true;
+ 
++    public boolean automatic_upload_buffer_memory = true;
++    public int upload_buffer_memory = 256;
++
+     public int region_keep_distance = 32;
+ 
+     public boolean render_fog = true;
+diff --git a/src/main/java/me/cortex/nvidium/util/AdaptiveUploadBufferSizing.java b/src/main/java/me/cortex/nvidium/util/AdaptiveUploadBufferSizing.java
+new file mode 100644
+--- /dev/null
++++ b/src/main/java/me/cortex/nvidium/util/AdaptiveUploadBufferSizing.java
+@@ -0,0 +1,42 @@
++package me.cortex.nvidium.util;
++
++/**
++ * Chooses the size of Nvidium's persistent CPU-to-GPU geometry upload buffer.
++ *
++ * <p>The buffer is native/client storage rather than Java heap memory. The configured
++ * maximum heap is used only as a conservative signal for how much system memory the
++ * user intended to make available to Minecraft.</p>
++ */
++public final class AdaptiveUploadBufferSizing {
++    private static final long MEBIBYTE = 1024L * 1024L;
++
++    public static final int MIN_UPLOAD_BUFFER_MB = 32;
++    public static final int MAX_UPLOAD_BUFFER_MB = 512;
++
++    private AdaptiveUploadBufferSizing() {
++    }
++
++    public static long resolveBytes(boolean automatic, int configuredMegabytes) {
++        int megabytes = automatic
++                ? automaticMegabytes(Runtime.getRuntime().maxMemory())
++                : clampMegabytes(configuredMegabytes);
++
++        return megabytes * MEBIBYTE;
++    }
++
++    static int automaticMegabytes(long maximumHeapBytes) {
++        long maximumHeapMegabytes = Math.max(1L, maximumHeapBytes / MEBIBYTE);
++
++        // Reserve up to 6.25% of the configured heap limit as native upload staging.
++        // 4 GiB heap -> 256 MiB, 6 GiB -> 384 MiB, 8 GiB+ -> 512 MiB.
++        long targetMegabytes = maximumHeapMegabytes / 16L;
++        int clamped = clampMegabytes((int) Math.min(Integer.MAX_VALUE, targetMegabytes));
++
++        // Keep the allocation aligned to 16 MiB for predictable driver allocations.
++        return Math.max(MIN_UPLOAD_BUFFER_MB, (clamped / 16) * 16);
++    }
++
++    private static int clampMegabytes(int megabytes) {
++        return Math.max(MIN_UPLOAD_BUFFER_MB, Math.min(MAX_UPLOAD_BUFFER_MB, megabytes));
++    }
++}
+diff --git a/src/main/java/me/cortex/nvidium/util/UploadingBufferStream.java b/src/main/java/me/cortex/nvidium/util/UploadingBufferStream.java
+--- a/src/main/java/me/cortex/nvidium/util/UploadingBufferStream.java
++++ b/src/main/java/me/cortex/nvidium/util/UploadingBufferStream.java
+@@ -22,6 +22,7 @@ public class UploadingBufferStream {
+     private final SegmentedManager allocationArena = new SegmentedManager();
+     private final PersistentClientMappedBuffer uploadBuffer;
++    private final long capacityBytes;
+ 
+     private final Deque<UploadFrame> frames = new ArrayDeque<>();
+     private final LongArrayList thisFrameAllocations = new LongArrayList();
+@@ -29,8 +30,11 @@ public class UploadingBufferStream {
+     private final Deque<UploadData> uploadList = new ArrayDeque<>();
+     private final LongArrayList flushList = new LongArrayList();
+ 
++    private long forcedWaitCount;
++
+     public UploadingBufferStream(RenderDevice device, long size) {
++        this.capacityBytes = size;
+         this.allocationArena.setLimit(size);
+         this.uploadBuffer = device.createClientMappedBuffer(size);
+         TickableManager.register(this);
+@@ -43,6 +47,9 @@ public class UploadingBufferStream {
+         if (size > Integer.MAX_VALUE || size == 0 || size < 0) {
+             throw new IllegalArgumentException();
+         }
++        if (size > this.capacityBytes) {
++            throw new IllegalArgumentException("Single upload exceeds staging buffer capacity");
++        }
+         if (destOffset < 0) {
+             throw new IllegalStateException();
+         }
+@@ -56,6 +63,7 @@ public class UploadingBufferStream {
+             this.caddr = this.allocationArena.alloc((int) size);
+             //If the upload stream is full, flush it and empty it
+             if (this.caddr == SIZE_LIMIT) {
++                this.forcedWaitCount++;
+                 this.commit();
+                 int attempts = 10;
+                 while (--attempts != 0 && this.caddr == SIZE_LIMIT) {
+@@ -78,7 +86,7 @@ public class UploadingBufferStream {
+             this.offset += size;
+         }
+ 
+-        if (this.caddr + size > this.uploadBuffer.size) {
++        if (addr + size > this.uploadBuffer.size) {
+             throw new IllegalStateException();
+         }
+ 
+@@ -130,6 +138,14 @@ public class UploadingBufferStream {
+         }
+     }
+ 
++    public int getCapacityMiB() {
++        return (int) (this.capacityBytes / (1024L * 1024L));
++    }
++
++    public long getForcedWaitCount() {
++        return this.forcedWaitCount;
++    }
++
+     public void delete() {
+         TickableManager.remove(this);
+         this.uploadBuffer.delete();
