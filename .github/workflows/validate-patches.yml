@@ -1,0 +1,49 @@
+name: Validate Nvidium patches
+
+on:
+  push:
+    branches:
+      - main
+      - agent/**
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out patch repository
+        uses: actions/checkout@v4
+        with:
+          path: patch-source
+
+      - name: Check out exact Nvidium upstream revision
+        uses: actions/checkout@v4
+        with:
+          repository: MCRcortex/nvidium
+          ref: 9cb209d86b53c242de47fbb3e56eda68085f87d8
+          path: nvidium
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+          cache-dependency-path: nvidium/**/*.gradle*
+
+      - name: Apply Iris compatibility patch
+        working-directory: nvidium
+        run: git apply --check ../patch-source/patches/0001-nvidium-iris-exp3.patch && git apply ../patch-source/patches/0001-nvidium-iris-exp3.patch
+
+      - name: Apply adaptive RAM staging patch
+        working-directory: nvidium
+        run: git apply --check ../patch-source/patches/0002-adaptive-ram-staging.patch && git apply ../patch-source/patches/0002-adaptive-ram-staging.patch
+
+      - name: Build patched Nvidium
+        working-directory: nvidium
+        run: chmod +x gradlew && ./gradlew build --no-daemon --stacktrace
