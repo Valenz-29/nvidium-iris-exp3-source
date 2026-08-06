@@ -1,0 +1,431 @@
+Classfile jar:file:///mnt/data/nvidium_iris_source_work/mrpack/overrides/mods/nvidium-0.4.4-beta2-26.1-iris-exp3.jar!/me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer.class
+  Last modified Jan 31, 1980; size 5816 bytes
+  SHA-256 checksum dbc16bf32ffdf26cd8cbf229ae89f5e1a699796ad88936d677b217aff4884277
+  Compiled from "MixinSodiumWorldRenderer.java"
+public abstract class me.cortex.nvidium.mixin.sodium.MixinSodiumWorldRenderer implements me.cortex.nvidium.sodiumCompat.INvidiumWorldRendererGetter
+  minor version: 0
+  major version: 69
+  flags: (0x0421) ACC_PUBLIC, ACC_SUPER, ACC_ABSTRACT
+  this_class: #14                         // me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer
+  super_class: #2                         // java/lang/Object
+  interfaces: 1, fields: 2, methods: 4, attributes: 2
+Constant pool:
+    #1 = Methodref          #2.#3         // java/lang/Object."<init>":()V
+    #2 = Class              #4            // java/lang/Object
+    #3 = NameAndType        #5:#6         // "<init>":()V
+    #4 = Utf8               java/lang/Object
+    #5 = Utf8               <init>
+    #6 = Utf8               ()V
+    #7 = Fieldref           #8.#9         // me/cortex/nvidium/Nvidium.IS_ENABLED:Z
+    #8 = Class              #10           // me/cortex/nvidium/Nvidium
+    #9 = NameAndType        #11:#12       // IS_ENABLED:Z
+   #10 = Utf8               me/cortex/nvidium/Nvidium
+   #11 = Utf8               IS_ENABLED
+   #12 = Utf8               Z
+   #13 = Fieldref           #14.#15       // me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer.renderSectionManager:Lnet/caffeinemc/mods/sodium/client/render/chunk/RenderSectionManager;
+   #14 = Class              #16           // me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer
+   #15 = NameAndType        #17:#18       // renderSectionManager:Lnet/caffeinemc/mods/sodium/client/render/chunk/RenderSectionManager;
+   #16 = Utf8               me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer
+   #17 = Utf8               renderSectionManager
+   #18 = Utf8               Lnet/caffeinemc/mods/sodium/client/render/chunk/RenderSectionManager;
+   #19 = Class              #20           // me/cortex/nvidium/sodiumCompat/INvidiumWorldRendererGetter
+   #20 = Utf8               me/cortex/nvidium/sodiumCompat/INvidiumWorldRendererGetter
+   #21 = InterfaceMethodref #19.#22       // me/cortex/nvidium/sodiumCompat/INvidiumWorldRendererGetter.getRenderer:()Lme/cortex/nvidium/NvidiumWorldRenderer;
+   #22 = NameAndType        #23:#24       // getRenderer:()Lme/cortex/nvidium/NvidiumWorldRenderer;
+   #23 = Utf8               getRenderer
+   #24 = Utf8               ()Lme/cortex/nvidium/NvidiumWorldRenderer;
+   #25 = Fieldref           #14.#26       // me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer.viewport:Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;
+   #26 = NameAndType        #27:#28       // viewport:Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;
+   #27 = Utf8               viewport
+   #28 = Utf8               Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;
+   #29 = Methodref          #30.#31       // org/spongepowered/asm/mixin/injection/callback/CallbackInfo.cancel:()V
+   #30 = Class              #32           // org/spongepowered/asm/mixin/injection/callback/CallbackInfo
+   #31 = NameAndType        #33:#6        // cancel:()V
+   #32 = Utf8               org/spongepowered/asm/mixin/injection/callback/CallbackInfo
+   #33 = Utf8               cancel
+   #34 = Fieldref           #35.#36       // net/caffeinemc/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses.CUTOUT:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+   #35 = Class              #37           // net/caffeinemc/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses
+   #36 = NameAndType        #38:#39       // CUTOUT:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+   #37 = Utf8               net/caffeinemc/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses
+   #38 = Utf8               CUTOUT
+   #39 = Utf8               Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+   #40 = Methodref          #41.#42       // net/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass.getTarget:()Lcom/mojang/blaze3d/pipeline/RenderTarget;
+   #41 = Class              #43           // net/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass
+   #42 = NameAndType        #44:#45       // getTarget:()Lcom/mojang/blaze3d/pipeline/RenderTarget;
+   #43 = Utf8               net/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass
+   #44 = Utf8               getTarget
+   #45 = Utf8               ()Lcom/mojang/blaze3d/pipeline/RenderTarget;
+   #46 = Methodref          #47.#48       // com/mojang/blaze3d/pipeline/RenderTarget.getColorTexture:()Lcom/mojang/blaze3d/textures/GpuTexture;
+   #47 = Class              #49           // com/mojang/blaze3d/pipeline/RenderTarget
+   #48 = NameAndType        #50:#51       // getColorTexture:()Lcom/mojang/blaze3d/textures/GpuTexture;
+   #49 = Utf8               com/mojang/blaze3d/pipeline/RenderTarget
+   #50 = Utf8               getColorTexture
+   #51 = Utf8               ()Lcom/mojang/blaze3d/textures/GpuTexture;
+   #52 = Methodref          #53.#54       // com/mojang/blaze3d/textures/GpuTexture.getWidth:(I)I
+   #53 = Class              #55           // com/mojang/blaze3d/textures/GpuTexture
+   #54 = NameAndType        #56:#57       // getWidth:(I)I
+   #55 = Utf8               com/mojang/blaze3d/textures/GpuTexture
+   #56 = Utf8               getWidth
+   #57 = Utf8               (I)I
+   #58 = Methodref          #53.#59       // com/mojang/blaze3d/textures/GpuTexture.getHeight:(I)I
+   #59 = NameAndType        #60:#57       // getHeight:(I)I
+   #60 = Utf8               getHeight
+   #61 = Methodref          #62.#63       // com/mojang/blaze3d/opengl/GlStateManager._viewport:(IIII)V
+   #62 = Class              #64           // com/mojang/blaze3d/opengl/GlStateManager
+   #63 = NameAndType        #65:#66       // _viewport:(IIII)V
+   #64 = Utf8               com/mojang/blaze3d/opengl/GlStateManager
+   #65 = Utf8               _viewport
+   #66 = Utf8               (IIII)V
+   #67 = Class              #68           // com/mojang/blaze3d/opengl/GlConst
+   #68 = Utf8               com/mojang/blaze3d/opengl/GlConst
+   #69 = Integer            36160
+   #70 = Class              #71           // com/mojang/blaze3d/opengl/GlTexture
+   #71 = Utf8               com/mojang/blaze3d/opengl/GlTexture
+   #72 = Methodref          #73.#74       // com/mojang/blaze3d/systems/RenderSystem.getDevice:()Lcom/mojang/blaze3d/systems/GpuDevice;
+   #73 = Class              #75           // com/mojang/blaze3d/systems/RenderSystem
+   #74 = NameAndType        #76:#77       // getDevice:()Lcom/mojang/blaze3d/systems/GpuDevice;
+   #75 = Utf8               com/mojang/blaze3d/systems/RenderSystem
+   #76 = Utf8               getDevice
+   #77 = Utf8               ()Lcom/mojang/blaze3d/systems/GpuDevice;
+   #78 = Class              #79           // net/caffeinemc/mods/sodium/mixin/core/GpuDeviceAccessor
+   #79 = Utf8               net/caffeinemc/mods/sodium/mixin/core/GpuDeviceAccessor
+   #80 = InterfaceMethodref #78.#81       // net/caffeinemc/mods/sodium/mixin/core/GpuDeviceAccessor.sodium$getBackend:()Lcom/mojang/blaze3d/systems/GpuDeviceBackend;
+   #81 = NameAndType        #82:#83       // sodium$getBackend:()Lcom/mojang/blaze3d/systems/GpuDeviceBackend;
+   #82 = Utf8               sodium$getBackend
+   #83 = Utf8               ()Lcom/mojang/blaze3d/systems/GpuDeviceBackend;
+   #84 = Class              #85           // com/mojang/blaze3d/opengl/GlDevice
+   #85 = Utf8               com/mojang/blaze3d/opengl/GlDevice
+   #86 = Methodref          #84.#87       // com/mojang/blaze3d/opengl/GlDevice.directStateAccess:()Lcom/mojang/blaze3d/opengl/DirectStateAccess;
+   #87 = NameAndType        #88:#89       // directStateAccess:()Lcom/mojang/blaze3d/opengl/DirectStateAccess;
+   #88 = Utf8               directStateAccess
+   #89 = Utf8               ()Lcom/mojang/blaze3d/opengl/DirectStateAccess;
+   #90 = Methodref          #47.#91       // com/mojang/blaze3d/pipeline/RenderTarget.getDepthTexture:()Lcom/mojang/blaze3d/textures/GpuTexture;
+   #91 = NameAndType        #92:#51       // getDepthTexture:()Lcom/mojang/blaze3d/textures/GpuTexture;
+   #92 = Utf8               getDepthTexture
+   #93 = Methodref          #70.#94       // com/mojang/blaze3d/opengl/GlTexture.getFbo:(Lcom/mojang/blaze3d/opengl/DirectStateAccess;Lcom/mojang/blaze3d/textures/GpuTexture;)I
+   #94 = NameAndType        #95:#96       // getFbo:(Lcom/mojang/blaze3d/opengl/DirectStateAccess;Lcom/mojang/blaze3d/textures/GpuTexture;)I
+   #95 = Utf8               getFbo
+   #96 = Utf8               (Lcom/mojang/blaze3d/opengl/DirectStateAccess;Lcom/mojang/blaze3d/textures/GpuTexture;)I
+   #97 = Methodref          #62.#98       // com/mojang/blaze3d/opengl/GlStateManager._glBindFramebuffer:(II)V
+   #98 = NameAndType        #99:#100      // _glBindFramebuffer:(II)V
+   #99 = Utf8               _glBindFramebuffer
+  #100 = Utf8               (II)V
+  #101 = Methodref          #102.#103     // com/mojang/blaze3d/systems/GpuDevice.createCommandEncoder:()Lcom/mojang/blaze3d/systems/CommandEncoder;
+  #102 = Class              #104          // com/mojang/blaze3d/systems/GpuDevice
+  #103 = NameAndType        #105:#106     // createCommandEncoder:()Lcom/mojang/blaze3d/systems/CommandEncoder;
+  #104 = Utf8               com/mojang/blaze3d/systems/GpuDevice
+  #105 = Utf8               createCommandEncoder
+  #106 = Utf8               ()Lcom/mojang/blaze3d/systems/CommandEncoder;
+  #107 = Class              #108          // net/caffeinemc/mods/sodium/mixin/core/CommandEncoderAccessor
+  #108 = Utf8               net/caffeinemc/mods/sodium/mixin/core/CommandEncoderAccessor
+  #109 = InterfaceMethodref #107.#110     // net/caffeinemc/mods/sodium/mixin/core/CommandEncoderAccessor.sodium$getBackend:()Lcom/mojang/blaze3d/systems/CommandEncoderBackend;
+  #110 = NameAndType        #82:#111      // sodium$getBackend:()Lcom/mojang/blaze3d/systems/CommandEncoderBackend;
+  #111 = Utf8               ()Lcom/mojang/blaze3d/systems/CommandEncoderBackend;
+  #112 = Class              #113          // net/caffeinemc/mods/sodium/mixin/core/GlCommandEncoderAccessor
+  #113 = Utf8               net/caffeinemc/mods/sodium/mixin/core/GlCommandEncoderAccessor
+  #114 = Methodref          #41.#115      // net/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass.getPipeline:()Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+  #115 = NameAndType        #116:#117     // getPipeline:()Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+  #116 = Utf8               getPipeline
+  #117 = Utf8               ()Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+  #118 = InterfaceMethodref #112.#119     // net/caffeinemc/mods/sodium/mixin/core/GlCommandEncoderAccessor.sodium$applyPipelineState:(Lcom/mojang/blaze3d/pipeline/RenderPipeline;)V
+  #119 = NameAndType        #120:#121     // sodium$applyPipelineState:(Lcom/mojang/blaze3d/pipeline/RenderPipeline;)V
+  #120 = Utf8               sodium$applyPipelineState
+  #121 = Utf8               (Lcom/mojang/blaze3d/pipeline/RenderPipeline;)V
+  #122 = InterfaceMethodref #112.#123     // net/caffeinemc/mods/sodium/mixin/core/GlCommandEncoderAccessor.sodium$setLastProgram:(Lcom/mojang/blaze3d/opengl/GlProgram;)V
+  #123 = NameAndType        #124:#125     // sodium$setLastProgram:(Lcom/mojang/blaze3d/opengl/GlProgram;)V
+  #124 = Utf8               sodium$setLastProgram
+  #125 = Utf8               (Lcom/mojang/blaze3d/opengl/GlProgram;)V
+  #126 = Fieldref           #35.#127      // net/caffeinemc/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses.SOLID:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+  #127 = NameAndType        #128:#39      // SOLID:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+  #128 = Utf8               SOLID
+  #129 = Methodref          #14.#22       // me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer.getRenderer:()Lme/cortex/nvidium/NvidiumWorldRenderer;
+  #130 = Methodref          #131.#132     // me/cortex/nvidium/NvidiumWorldRenderer.renderFrame:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;Lnet/caffeinemc/mods/sodium/client/util/FogParameters;Lnet/caffeinemc/mods/sodium/client/render/chunk/ChunkRenderMatrices;DDDLcom/mojang/blaze3d/textures/GpuSampler;)V
+  #131 = Class              #133          // me/cortex/nvidium/NvidiumWorldRenderer
+  #132 = NameAndType        #134:#135     // renderFrame:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;Lnet/caffeinemc/mods/sodium/client/util/FogParameters;Lnet/caffeinemc/mods/sodium/client/render/chunk/ChunkRenderMatrices;DDDLcom/mojang/blaze3d/textures/GpuSampler;)V
+  #133 = Utf8               me/cortex/nvidium/NvidiumWorldRenderer
+  #134 = Utf8               renderFrame
+  #135 = Utf8               (Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;Lnet/caffeinemc/mods/sodium/client/util/FogParameters;Lnet/caffeinemc/mods/sodium/client/render/chunk/ChunkRenderMatrices;DDDLcom/mojang/blaze3d/textures/GpuSampler;)V
+  #136 = Fieldref           #35.#137      // net/caffeinemc/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses.TRANSLUCENT:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+  #137 = NameAndType        #138:#39      // TRANSLUCENT:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+  #138 = Utf8               TRANSLUCENT
+  #139 = Methodref          #131.#140     // me/cortex/nvidium/NvidiumWorldRenderer.renderTranslucent:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;Lcom/mojang/blaze3d/textures/GpuSampler;)V
+  #140 = NameAndType        #141:#142     // renderTranslucent:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;Lcom/mojang/blaze3d/textures/GpuSampler;)V
+  #141 = Utf8               renderTranslucent
+  #142 = Utf8               (Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;Lcom/mojang/blaze3d/textures/GpuSampler;)V
+  #143 = Utf8               RuntimeVisibleAnnotations
+  #144 = Utf8               Lorg/spongepowered/asm/mixin/Shadow;
+  #145 = Utf8               Lorg/spongepowered/asm/mixin/Unique;
+  #146 = Utf8               Code
+  #147 = Utf8               LineNumberTable
+  #148 = Utf8               LocalVariableTable
+  #149 = Utf8               this
+  #150 = Utf8               Lme/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer;
+  #151 = Utf8               StackMapTable
+  #152 = Utf8               trackViewport
+  #153 = Utf8               (Lnet/minecraft/client/Camera;Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;Lnet/caffeinemc/mods/sodium/client/util/FogParameters;ZZLorg/joml/Matrix4f;Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V
+  #154 = Utf8               camera
+  #155 = Utf8               Lnet/minecraft/client/Camera;
+  #156 = Utf8               fogParameters
+  #157 = Utf8               Lnet/caffeinemc/mods/sodium/client/util/FogParameters;
+  #158 = Utf8               spectator
+  #159 = Utf8               updateChunksImmediately
+  #160 = Utf8               cullMatrix
+  #161 = Utf8               Lorg/joml/Matrix4f;
+  #162 = Utf8               ci
+  #163 = Utf8               Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;
+  #164 = Utf8               Lorg/spongepowered/asm/mixin/injection/Inject;
+  #165 = Utf8               method
+  #166 = Utf8               setupTerrain
+  #167 = Utf8               at
+  #168 = Utf8               Lorg/spongepowered/asm/mixin/injection/At;
+  #169 = Utf8               value
+  #170 = Utf8               HEAD
+  #171 = Utf8               renderLayer
+  #172 = Utf8               (Lnet/caffeinemc/mods/sodium/client/gl/device/CommandList;Lnet/caffeinemc/mods/sodium/client/render/chunk/ChunkRenderMatrices;Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;DDDLnet/caffeinemc/mods/sodium/client/util/FogParameters;Lcom/mojang/blaze3d/textures/GpuSampler;Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V
+  #173 = Utf8               target
+  #174 = Utf8               Lcom/mojang/blaze3d/pipeline/RenderTarget;
+  #175 = Utf8               commandList
+  #176 = Utf8               Lnet/caffeinemc/mods/sodium/client/gl/device/CommandList;
+  #177 = Utf8               matrices
+  #178 = Utf8               Lnet/caffeinemc/mods/sodium/client/render/chunk/ChunkRenderMatrices;
+  #179 = Utf8               pass
+  #180 = Utf8               x
+  #181 = Utf8               D
+  #182 = Utf8               y
+  #183 = Utf8               z
+  #184 = Utf8               terrainSampler
+  #185 = Utf8               Lcom/mojang/blaze3d/textures/GpuSampler;
+  #186 = Utf8               cancellable
+  #187 = Integer            1
+  #188 = Utf8               SourceFile
+  #189 = Utf8               MixinSodiumWorldRenderer.java
+  #190 = Utf8               RuntimeInvisibleAnnotations
+  #191 = Utf8               Lorg/spongepowered/asm/mixin/Mixin;
+  #192 = Utf8               Lnet/caffeinemc/mods/sodium/client/render/SodiumWorldRenderer;
+  #193 = Utf8               remap
+  #194 = Integer            0
+  #195 = Utf8               me/cortex/nvidium/compat/IrisFramebufferBridge
+  #196 = Class              #195          // me/cortex/nvidium/compat/IrisFramebufferBridge
+  #197 = Utf8               captureTarget
+  #198 = Utf8               (Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;)Lcom/mojang/blaze3d/pipeline/RenderTarget;
+  #199 = NameAndType        #197:#198     // captureTarget:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;)Lcom/mojang/blaze3d/pipeline/RenderTarget;
+  #200 = Methodref          #196.#199     // me/cortex/nvidium/compat/IrisFramebufferBridge.captureTarget:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;)Lcom/mojang/blaze3d/pipeline/RenderTarget;
+  #201 = Utf8               bindFramebuffer
+  #202 = NameAndType        #201:#100     // bindFramebuffer:(II)V
+  #203 = Methodref          #196.#202     // me/cortex/nvidium/compat/IrisFramebufferBridge.bindFramebuffer:(II)V
+{
+  private net.caffeinemc.mods.sodium.client.render.chunk.RenderSectionManager renderSectionManager;
+    descriptor: Lnet/caffeinemc/mods/sodium/client/render/chunk/RenderSectionManager;
+    flags: (0x0002) ACC_PRIVATE
+    RuntimeVisibleAnnotations:
+      0: #144()
+        org.spongepowered.asm.mixin.Shadow
+
+  private net.caffeinemc.mods.sodium.client.render.viewport.Viewport viewport;
+    descriptor: Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;
+    flags: (0x0002) ACC_PRIVATE
+    RuntimeVisibleAnnotations:
+      0: #145()
+        org.spongepowered.asm.mixin.Unique
+
+  public me.cortex.nvidium.mixin.sodium.MixinSodiumWorldRenderer();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 34: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lme/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer;
+
+  public me.cortex.nvidium.NvidiumWorldRenderer getRenderer();
+    descriptor: ()Lme/cortex/nvidium/NvidiumWorldRenderer;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #7                  // Field me/cortex/nvidium/Nvidium.IS_ENABLED:Z
+         3: ifeq          19
+         6: aload_0
+         7: getfield      #13                 // Field renderSectionManager:Lnet/caffeinemc/mods/sodium/client/render/chunk/RenderSectionManager;
+        10: checkcast     #19                 // class me/cortex/nvidium/sodiumCompat/INvidiumWorldRendererGetter
+        13: invokeinterface #21,  1           // InterfaceMethod me/cortex/nvidium/sodiumCompat/INvidiumWorldRendererGetter.getRenderer:()Lme/cortex/nvidium/NvidiumWorldRenderer;
+        18: areturn
+        19: aconst_null
+        20: areturn
+      LineNumberTable:
+        line 40: 0
+        line 41: 6
+        line 43: 19
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      21     0  this   Lme/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer;
+      StackMapTable: number_of_entries = 1
+        frame_type = 19 /* same */
+
+  private void trackViewport(net.minecraft.client.Camera, net.caffeinemc.mods.sodium.client.render.viewport.Viewport, net.caffeinemc.mods.sodium.client.util.FogParameters, boolean, boolean, org.joml.Matrix4f, org.spongepowered.asm.mixin.injection.callback.CallbackInfo);
+    descriptor: (Lnet/minecraft/client/Camera;Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;Lnet/caffeinemc/mods/sodium/client/util/FogParameters;ZZLorg/joml/Matrix4f;Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V
+    flags: (0x0002) ACC_PRIVATE
+    Code:
+      stack=2, locals=8, args_size=8
+         0: aload_0
+         1: aload_2
+         2: putfield      #25                 // Field viewport:Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;
+         5: return
+      LineNumberTable:
+        line 49: 0
+        line 50: 5
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       6     0  this   Lme/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer;
+            0       6     1 camera   Lnet/minecraft/client/Camera;
+            0       6     2 viewport   Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;
+            0       6     3 fogParameters   Lnet/caffeinemc/mods/sodium/client/util/FogParameters;
+            0       6     4 spectator   Z
+            0       6     5 updateChunksImmediately   Z
+            0       6     6 cullMatrix   Lorg/joml/Matrix4f;
+            0       6     7    ci   Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;
+    RuntimeVisibleAnnotations:
+      0: #164(#165=[s#166],#167=[@#168(#169=s#170)])
+        org.spongepowered.asm.mixin.injection.Inject(
+          method=["setupTerrain"]
+          at=[@org.spongepowered.asm.mixin.injection.At(
+            value="HEAD"
+          )]
+        )
+
+  public void renderLayer(net.caffeinemc.mods.sodium.client.gl.device.CommandList, net.caffeinemc.mods.sodium.client.render.chunk.ChunkRenderMatrices, net.caffeinemc.mods.sodium.client.render.chunk.terrain.TerrainRenderPass, double, double, double, net.caffeinemc.mods.sodium.client.util.FogParameters, com.mojang.blaze3d.textures.GpuSampler, org.spongepowered.asm.mixin.injection.callback.CallbackInfo);
+    descriptor: (Lnet/caffeinemc/mods/sodium/client/gl/device/CommandList;Lnet/caffeinemc/mods/sodium/client/render/chunk/ChunkRenderMatrices;Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;DDDLnet/caffeinemc/mods/sodium/client/util/FogParameters;Lcom/mojang/blaze3d/textures/GpuSampler;Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=12, locals=14, args_size=10
+         0: getstatic     #7                  // Field me/cortex/nvidium/Nvidium.IS_ENABLED:Z
+         3: ifeq          185
+         6: aload         12
+         8: invokevirtual #29                 // Method org/spongepowered/asm/mixin/injection/callback/CallbackInfo.cancel:()V
+        11: aload_3
+        12: getstatic     #34                 // Field net/caffeinemc/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses.CUTOUT:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+        15: if_acmpne     19
+        18: return
+        19: aload_3
+        20: invokestatic  #200                // Method me/cortex/nvidium/compat/IrisFramebufferBridge.captureTarget:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;)Lcom/mojang/blaze3d/pipeline/RenderTarget;
+        23: astore        13
+        25: iconst_0
+        26: iconst_0
+        27: aload         13
+        29: invokevirtual #46                 // Method com/mojang/blaze3d/pipeline/RenderTarget.getColorTexture:()Lcom/mojang/blaze3d/textures/GpuTexture;
+        32: iconst_0
+        33: invokevirtual #52                 // Method com/mojang/blaze3d/textures/GpuTexture.getWidth:(I)I
+        36: aload         13
+        38: invokevirtual #46                 // Method com/mojang/blaze3d/pipeline/RenderTarget.getColorTexture:()Lcom/mojang/blaze3d/textures/GpuTexture;
+        41: iconst_0
+        42: invokevirtual #58                 // Method com/mojang/blaze3d/textures/GpuTexture.getHeight:(I)I
+        45: invokestatic  #61                 // Method com/mojang/blaze3d/opengl/GlStateManager._viewport:(IIII)V
+        48: ldc           #69                 // int 36160
+        50: aload         13
+        52: invokevirtual #46                 // Method com/mojang/blaze3d/pipeline/RenderTarget.getColorTexture:()Lcom/mojang/blaze3d/textures/GpuTexture;
+        55: checkcast     #70                 // class com/mojang/blaze3d/opengl/GlTexture
+        58: invokestatic  #72                 // Method com/mojang/blaze3d/systems/RenderSystem.getDevice:()Lcom/mojang/blaze3d/systems/GpuDevice;
+        61: checkcast     #78                 // class net/caffeinemc/mods/sodium/mixin/core/GpuDeviceAccessor
+        64: invokeinterface #80,  1           // InterfaceMethod net/caffeinemc/mods/sodium/mixin/core/GpuDeviceAccessor.sodium$getBackend:()Lcom/mojang/blaze3d/systems/GpuDeviceBackend;
+        69: checkcast     #84                 // class com/mojang/blaze3d/opengl/GlDevice
+        72: invokevirtual #86                 // Method com/mojang/blaze3d/opengl/GlDevice.directStateAccess:()Lcom/mojang/blaze3d/opengl/DirectStateAccess;
+        75: aload         13
+        77: invokevirtual #90                 // Method com/mojang/blaze3d/pipeline/RenderTarget.getDepthTexture:()Lcom/mojang/blaze3d/textures/GpuTexture;
+        80: invokevirtual #93                 // Method com/mojang/blaze3d/opengl/GlTexture.getFbo:(Lcom/mojang/blaze3d/opengl/DirectStateAccess;Lcom/mojang/blaze3d/textures/GpuTexture;)I
+        83: invokestatic  #203                // Method me/cortex/nvidium/compat/IrisFramebufferBridge.bindFramebuffer:(II)V
+        86: invokestatic  #72                 // Method com/mojang/blaze3d/systems/RenderSystem.getDevice:()Lcom/mojang/blaze3d/systems/GpuDevice;
+        89: invokevirtual #101                // Method com/mojang/blaze3d/systems/GpuDevice.createCommandEncoder:()Lcom/mojang/blaze3d/systems/CommandEncoder;
+        92: checkcast     #107                // class net/caffeinemc/mods/sodium/mixin/core/CommandEncoderAccessor
+        95: invokeinterface #109,  1          // InterfaceMethod net/caffeinemc/mods/sodium/mixin/core/CommandEncoderAccessor.sodium$getBackend:()Lcom/mojang/blaze3d/systems/CommandEncoderBackend;
+       100: checkcast     #112                // class net/caffeinemc/mods/sodium/mixin/core/GlCommandEncoderAccessor
+       103: aload_3
+       104: invokevirtual #114                // Method net/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass.getPipeline:()Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+       107: invokeinterface #118,  2          // InterfaceMethod net/caffeinemc/mods/sodium/mixin/core/GlCommandEncoderAccessor.sodium$applyPipelineState:(Lcom/mojang/blaze3d/pipeline/RenderPipeline;)V
+       112: invokestatic  #72                 // Method com/mojang/blaze3d/systems/RenderSystem.getDevice:()Lcom/mojang/blaze3d/systems/GpuDevice;
+       115: invokevirtual #101                // Method com/mojang/blaze3d/systems/GpuDevice.createCommandEncoder:()Lcom/mojang/blaze3d/systems/CommandEncoder;
+       118: checkcast     #107                // class net/caffeinemc/mods/sodium/mixin/core/CommandEncoderAccessor
+       121: invokeinterface #109,  1          // InterfaceMethod net/caffeinemc/mods/sodium/mixin/core/CommandEncoderAccessor.sodium$getBackend:()Lcom/mojang/blaze3d/systems/CommandEncoderBackend;
+       126: checkcast     #112                // class net/caffeinemc/mods/sodium/mixin/core/GlCommandEncoderAccessor
+       129: aconst_null
+       130: invokeinterface #122,  2          // InterfaceMethod net/caffeinemc/mods/sodium/mixin/core/GlCommandEncoderAccessor.sodium$setLastProgram:(Lcom/mojang/blaze3d/opengl/GlProgram;)V
+       135: aload_3
+       136: getstatic     #126                // Field net/caffeinemc/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses.SOLID:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+       139: if_acmpne     168
+       142: aload_0
+       143: invokevirtual #129                // Method getRenderer:()Lme/cortex/nvidium/NvidiumWorldRenderer;
+       146: aload_3
+       147: aload_0
+       148: getfield      #25                 // Field viewport:Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;
+       151: aload         10
+       153: aload_2
+       154: dload         4
+       156: dload         6
+       158: dload         8
+       160: aload         11
+       162: invokevirtual #130                // Method me/cortex/nvidium/NvidiumWorldRenderer.renderFrame:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;Lnet/caffeinemc/mods/sodium/client/render/viewport/Viewport;Lnet/caffeinemc/mods/sodium/client/util/FogParameters;Lnet/caffeinemc/mods/sodium/client/render/chunk/ChunkRenderMatrices;DDDLcom/mojang/blaze3d/textures/GpuSampler;)V
+       165: goto          185
+       168: aload_3
+       169: getstatic     #136                // Field net/caffeinemc/mods/sodium/client/render/chunk/terrain/DefaultTerrainRenderPasses.TRANSLUCENT:Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+       172: if_acmpne     185
+       175: aload_0
+       176: invokevirtual #129                // Method getRenderer:()Lme/cortex/nvidium/NvidiumWorldRenderer;
+       179: aload_3
+       180: aload         11
+       182: invokevirtual #139                // Method me/cortex/nvidium/NvidiumWorldRenderer.renderTranslucent:(Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;Lcom/mojang/blaze3d/textures/GpuSampler;)V
+       185: return
+      StackMapTable: number_of_entries = 3
+        frame_type = 19 /* same */
+        frame_type = 252 /* append */
+          offset_delta = 148
+          locals = [ class com/mojang/blaze3d/pipeline/RenderTarget ]
+        frame_type = 250 /* chop */
+          offset_delta = 16
+      LineNumberTable:
+        line 54: 0
+        line 55: 6
+        line 56: 11
+        line 57: 18
+        line 59: 19
+        line 60: 25
+        line 61: 48
+        line 62: 86
+        line 63: 112
+        line 65: 135
+        line 66: 142
+        line 67: 168
+        line 68: 175
+        line 71: 185
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+           25     160    13 target   Lcom/mojang/blaze3d/pipeline/RenderTarget;
+            0     186     0  this   Lme/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer;
+            0     186     1 commandList   Lnet/caffeinemc/mods/sodium/client/gl/device/CommandList;
+            0     186     2 matrices   Lnet/caffeinemc/mods/sodium/client/render/chunk/ChunkRenderMatrices;
+            0     186     3  pass   Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/TerrainRenderPass;
+            0     186     4     x   D
+            0     186     6     y   D
+            0     186     8     z   D
+            0     186    10 fogParameters   Lnet/caffeinemc/mods/sodium/client/util/FogParameters;
+            0     186    11 terrainSampler   Lcom/mojang/blaze3d/textures/GpuSampler;
+            0     186    12    ci   Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;
+    RuntimeVisibleAnnotations:
+      0: #164(#165=[s#171],#167=[@#168(#169=s#170)],#186=Z#187)
+        org.spongepowered.asm.mixin.injection.Inject(
+          method=["renderLayer"]
+          at=[@org.spongepowered.asm.mixin.injection.At(
+            value="HEAD"
+          )]
+          cancellable=true
+        )
+}
+SourceFile: "MixinSodiumWorldRenderer.java"
+RuntimeInvisibleAnnotations:
+  0: #191(#169=[c#192],#193=Z#194)
+    org.spongepowered.asm.mixin.Mixin(
+      value=[class Lnet/caffeinemc/mods/sodium/client/render/SodiumWorldRenderer;]
+      remap=false
+    )

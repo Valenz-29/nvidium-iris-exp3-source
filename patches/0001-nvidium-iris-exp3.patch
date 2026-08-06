@@ -1,0 +1,171 @@
+diff --git a/gradle.properties b/gradle.properties
+index 1db33e6d50880f01e7963c04cf13389ab976fe53..cda2c20512ba7c70ee8b4a3559fc5df7068a54c3 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -10,7 +10,7 @@ loader_version=0.18.4
+ fabric_version=0.144.0+26.1
+ 
+ # Mod Properties
+-mod_version=0.4.4-beta2-26.1
++mod_version=0.4.4-beta2-26.1-iris-exp3
+ maven_group=me.cortex
+ archives_base_name=nvidium
+ # Dependencies
+diff --git a/src/main/java/me/cortex/nvidium/compat/IrisFramebufferBridge.java b/src/main/java/me/cortex/nvidium/compat/IrisFramebufferBridge.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..46dfdacb58c1901d72c21ccffd7842390611c5d9
+--- /dev/null
++++ b/src/main/java/me/cortex/nvidium/compat/IrisFramebufferBridge.java
+@@ -0,0 +1,90 @@
++package me.cortex.nvidium.compat;
++
++import com.mojang.blaze3d.opengl.GlStateManager;
++import com.mojang.blaze3d.pipeline.RenderTarget;
++import net.caffeinemc.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
++
++import java.lang.reflect.Method;
++
++/**
++ * Experimental bridge that binds Iris' framebuffer for the active Sodium terrain pass.
++ *
++ * <p>The Iris classes are accessed through reflection so Nvidium can still load when
++ * Iris is not installed. If the bridge cannot resolve or bind an Iris framebuffer,
++ * rendering falls back to the framebuffer supplied by the vanilla/Sodium target.</p>
++ */
++public final class IrisFramebufferBridge {
++    private static final ThreadLocal<TerrainRenderPass> CURRENT_PASS = new ThreadLocal<>();
++
++    private static boolean reflectionInitialized;
++    private static boolean bridgeReported;
++    private static boolean failureReported;
++
++    private static Method irisGetPipelineManager;
++    private static Method pipelineManagerGetPipelineNullable;
++    private static Method worldPipelineGetSodiumPrograms;
++    private static Method sodiumProgramsGetFramebuffer;
++    private static Method irisFramebufferBind;
++
++    private IrisFramebufferBridge() {
++    }
++
++    public static RenderTarget captureTarget(TerrainRenderPass pass) {
++        CURRENT_PASS.set(pass);
++        return pass.getTarget();
++    }
++
++    public static void bindFramebuffer(int target, int fallbackFramebuffer) {
++        TerrainRenderPass pass = CURRENT_PASS.get();
++
++        if (pass != null) {
++            try {
++                initializeReflection();
++
++                Object pipelineManager = irisGetPipelineManager.invoke(null);
++                Object pipeline = pipelineManagerGetPipelineNullable.invoke(pipelineManager);
++                if (pipeline != null) {
++                    Object sodiumPrograms = worldPipelineGetSodiumPrograms.invoke(pipeline);
++                    if (sodiumPrograms != null) {
++                        Object framebuffer = sodiumProgramsGetFramebuffer.invoke(sodiumPrograms, pass);
++                        if (framebuffer != null) {
++                            irisFramebufferBind.invoke(framebuffer);
++                            if (!bridgeReported) {
++                                bridgeReported = true;
++                                System.out.println("[Nvidium Iris Exp3] Iris terrain framebuffer bridge active");
++                            }
++                            return;
++                        }
++                    }
++                }
++            } catch (Throwable throwable) {
++                if (!failureReported) {
++                    failureReported = true;
++                    System.err.println("[Nvidium Iris Exp3] Iris framebuffer bridge failed; using vanilla target");
++                    throwable.printStackTrace();
++                }
++            }
++        }
++
++        GlStateManager._glBindFramebuffer(target, fallbackFramebuffer);
++    }
++
++    private static void initializeReflection() throws ReflectiveOperationException {
++        if (reflectionInitialized) {
++            return;
++        }
++
++        Class<?> irisClass = Class.forName("net.irisshaders.iris.Iris");
++        Class<?> pipelineManagerClass = Class.forName("net.irisshaders.iris.pipeline.PipelineManager");
++        Class<?> worldPipelineClass = Class.forName("net.irisshaders.iris.pipeline.WorldRenderingPipeline");
++        Class<?> sodiumProgramsClass = Class.forName("net.irisshaders.iris.pipeline.programs.SodiumPrograms");
++        Class<?> irisFramebufferClass = Class.forName("net.irisshaders.iris.gl.framebuffer.GlFramebuffer");
++
++        irisGetPipelineManager = irisClass.getMethod("getPipelineManager");
++        pipelineManagerGetPipelineNullable = pipelineManagerClass.getMethod("getPipelineNullable");
++        worldPipelineGetSodiumPrograms = worldPipelineClass.getMethod("getSodiumPrograms");
++        sodiumProgramsGetFramebuffer = sodiumProgramsClass.getMethod("getFramebuffer", TerrainRenderPass.class);
++        irisFramebufferBind = irisFramebufferClass.getMethod("bind");
++        reflectionInitialized = true;
++    }
++}
+diff --git a/src/main/java/me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer.java b/src/main/java/me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer.java
+index df2a96cc5c2ccffd1b352f6246527f4fc6ffa4fa..85cec4f51ec67a5478e79b26c461c7613163d316 100644
+--- a/src/main/java/me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer.java
++++ b/src/main/java/me/cortex/nvidium/mixin/sodium/MixinSodiumWorldRenderer.java
+@@ -9,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
+ import com.mojang.blaze3d.textures.GpuSampler;
+ import me.cortex.nvidium.Nvidium;
+ import me.cortex.nvidium.NvidiumWorldRenderer;
++import me.cortex.nvidium.compat.IrisFramebufferBridge;
+ import me.cortex.nvidium.sodiumCompat.INvidiumWorldRendererGetter;
+ import net.caffeinemc.mods.sodium.client.gl.device.CommandList;
+ import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
+@@ -56,9 +57,9 @@ public abstract class MixinSodiumWorldRenderer implements INvidiumWorldRendererG
+             if (pass == DefaultTerrainRenderPasses.CUTOUT) // Early exit, cutout will be rendered with SOLID
+                 return;
+ 
+-            RenderTarget target = pass.getTarget();
++            RenderTarget target = IrisFramebufferBridge.captureTarget(pass);
+             GlStateManager._viewport(0, 0, target.getColorTexture().getWidth(0), target.getColorTexture().getHeight(0));
+-            GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, ((GlTexture) target.getColorTexture()).getFbo(((GlDevice) ((GpuDeviceAccessor) RenderSystem.getDevice()).sodium$getBackend()).directStateAccess(), target.getDepthTexture()));
++            IrisFramebufferBridge.bindFramebuffer(GlConst.GL_FRAMEBUFFER, ((GlTexture) target.getColorTexture()).getFbo(((GlDevice) ((GpuDeviceAccessor) RenderSystem.getDevice()).sodium$getBackend()).directStateAccess(), target.getDepthTexture()));
+             ((GlCommandEncoderAccessor) ((CommandEncoderAccessor) RenderSystem.getDevice().createCommandEncoder()).sodium$getBackend()).sodium$applyPipelineState(pass.getPipeline());
+             ((GlCommandEncoderAccessor) ((CommandEncoderAccessor) RenderSystem.getDevice().createCommandEncoder()).sodium$getBackend()).sodium$setLastProgram(null);
+ 
+diff --git a/src/main/resources/fabric.mod.json b/src/main/resources/fabric.mod.json
+index a7620048b46dabb241561ae82892b284c561242f..a8071224d7bee4d68591a59dc8e8b3916f0f3b54 100644
+--- a/src/main/resources/fabric.mod.json
++++ b/src/main/resources/fabric.mod.json
+@@ -6,8 +6,8 @@
+     "commit": "${commit}",
+     "buildtime": "${buildtime}"
+   },
+-  "name": "Nvidium",
+-  "description": "Replacement rendering engine for sodium",
++  "name": "Nvidium Iris Experimental",
++  "description": "Experimental Iris framebuffer bridge for Nvidium 0.4.4-beta2. Unsupported; intended for controlled tests.",
+   "authors": [
+     "Cortex"
+   ],
+@@ -23,13 +23,19 @@
+       "me.cortex.nvidium.config.ConfigGuiBuilder"
+     ]
+   },
+-  "accessWidener" : "nvidium.accesswidener",
++  "accessWidener": "nvidium.accesswidener",
+   "mixins": [
+     "nvidium.mixins.json"
+   ],
+   "depends": {
+     "fabricloader": ">=0.18.4",
+-    "minecraft": ["26.1", "26.1.1", "26.1.2"],
+-    "sodium": ["0.9.1"]
++    "minecraft": [
++      "26.1",
++      "26.1.1",
++      "26.1.2"
++    ],
++    "sodium": [
++      "0.9.1"
++    ]
+   }
+ }
