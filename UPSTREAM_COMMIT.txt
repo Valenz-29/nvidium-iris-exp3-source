@@ -1,0 +1,9 @@
+Upstream project: MCRcortex/nvidium
+Upstream commit: 9cb209d86b53c242de47fbb3e56eda68085f87d8
+Upstream branch at reconstruction time: 26.1
+Original license: GNU Lesser General Public License v3.0
+
+The supplied binary reported the custom commit string:
+9cb209d-iris-exp3
+
+The first seven characters match the upstream commit above.

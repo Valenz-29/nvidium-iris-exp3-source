@@ -1,0 +1,10 @@
+.gradle/
+build/
+out/
+*.class
+*.jar
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+nvidium-iris-exp3/
